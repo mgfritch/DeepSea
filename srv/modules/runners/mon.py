@@ -10,13 +10,20 @@ def deploy(bootstrap=False, non_interactive=False):
     pillar_questioneer(non_interactive=non_interactive)
     module_questioneer(non_interactive=non_interactive)
 
+    candidates = _get_candidates(role='mon')
+    if not candidates:
+        print("No candidates for monitors found. Exiting..")
+        return False
+
+    # TODO: run this twice?
+    #       - bootstrap.setup() the config.deploy_ceph_conf runner
+    #       - bootstrap.core() invokes this runner (mon.deploy),
+    #         which then invokes the config.deploy_ceph_conf runner
+    #
+    #       Remove run_and_eval from bootstrap.setup()?
     run_and_eval('config.deploy_ceph_conf')
 
-    candidates = _get_candidates(role='mon')
     if bootstrap:
-        if not candidates:
-            print("No candidates for monitors found. Exiting..")
-            return False
         print("Deploying in bootstrap mode.")
         print("We only create a minimal working cluster consisting of one monitor and one manager.")
         print("After the successful deployment, please follow-up with the regular 'deploy' operation. #TODO write better text")
