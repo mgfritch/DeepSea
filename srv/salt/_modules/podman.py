@@ -198,6 +198,27 @@ class Deploy(object):
 
         return self.keyring
 
+    # TODO: test example only - remove
+    # TODO: improve return checks
+    # TODO: clean-up hardcoded values
+    def create_initial_keyring2(self) -> str:
+        options = ['--rm']
+        image = 'registry.suse.de/devel/storage/6.0/images/ses/6/ceph/ceph'
+        volumes = ['/srv/salt/ceph/bootstrap:/srv/salt/ceph/bootstrap']
+
+        command = '/usr/bin/ceph-authtool'
+        command_args = ['--create-keyring', '/srv/salt/ceph/bootstrap/keyring',
+                        '--gen-key', '-n', 'mon.', '--cap', 'mon', 'allow *']
+
+        ret = __salt__['podman.run'](
+                options=options,
+                image=image,
+                volumes=volumes,
+                command=command,
+                command_args=command_args)
+
+        return ret
+
     # TODO: improve return checks
     def create_admin_keyring(self) -> str:
         """ TODO docstring """
@@ -539,6 +560,8 @@ def ensure_dirs_exist():
 def create_initial_keyring():
     return Deploy().create_initial_keyring()
 
+def create_initial_keyring2():
+    return Deploy().create_initial_keyring2()
 
 def create_admin_keyring():
     return Deploy().create_admin_keyring()
