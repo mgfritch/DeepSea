@@ -67,3 +67,14 @@ def remove(non_interactive=False, purge=False):
 def update():
     """ How to query/pull from the registry? """
     pass
+
+# TODO: test only ... REMOVE
+def test():
+    '''
+    TODO: test code remove
+    '''
+    ret = LocalClient().cmd('roles:master', 'podman.create_initial_keyring2', tgt_type='pillar', full_return=True)
+    print(type(ret))
+    print(str(ret))
+    return ret
+
